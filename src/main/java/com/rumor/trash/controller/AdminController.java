@@ -36,6 +36,6 @@ public class AdminController {
             file.transferTo(new File(fullPath));
         }
 
-        return "redirect:admin/excel_upload_form.html";
+        return "redirect:admin";
     }
 }
