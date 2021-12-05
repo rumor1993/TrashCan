@@ -23,6 +23,10 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     compileOnly 'org.projectlombok:lombok'
+
+    implementation group: 'org.apache.poi', name: 'poi', version: '5.0.0' // xls
+    implementation group: 'org.apache.poi', name: 'poi-ooxml', version: '5.0.0' // xlsx
+
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'com.h2database:h2'
     runtimeOnly 'org.postgresql:postgresql'

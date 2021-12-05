@@ -1,5 +1,8 @@
 package com.rumor.trash.controller;
 
+import com.rumor.trash.repository.AdminRepository;
+import com.rumor.trash.service.AdminService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,10 +15,11 @@ import java.io.File;
 import java.io.IOException;
 
 @Controller
+@RequiredArgsConstructor
 public class AdminController {
 
-    @Value("${file.dir}")
-    private String fileDir;
+    private final AdminService adminService;
+    private final AdminRepository adminRepository;
 
     @GetMapping("/home")
     public String home() {
@@ -28,14 +32,8 @@ public class AdminController {
     }
 
     @PostMapping("/upload")
-    public String saveFile(@RequestParam String itemName,
-            @RequestParam MultipartFile file) throws IOException {
-        System.out.println("itemName = " + itemName);
-        if (!file.isEmpty()) {
-            String fullPath = fileDir + file.getOriginalFilename();
-            file.transferTo(new File(fullPath));
-        }
-
+    public String saveFile(@RequestParam MultipartFile file) throws Exception {
+        adminService.createTrashInfoFromExcel(file);
         return "redirect:admin";
     }
 }
