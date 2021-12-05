@@ -24,6 +24,19 @@ async function createMap(geolocationPosition) {
     }
 
     var map = new naver.maps.Map('map', mapOptions);
+
+    var markerOptions = {
+        position: new naver.maps.LatLng(geolocationPosition.coords.latitude, geolocationPosition.coords.longitude),
+        map: map,
+        icon: {
+            url: "https://img.icons8.com/bubbles/50/000000/place-marker.png",
+            size: new naver.maps.Size(50, 50),
+            origin: new naver.maps.Point(0, 0),
+            anchor: new naver.maps.Point(25, 26)
+        }
+    };
+
+    var marker = new naver.maps.Marker(markerOptions);
     return map
 }
 
@@ -38,6 +51,11 @@ async function createMarker(map) {
         .then(addresses => {
             new naver.maps.Marker({
                 position: new naver.maps.LatLng(addresses.result.items[0].point),
+                icon: {
+                    url: "home/assets/images/icons8-trash-50-2.png",
+                    size: new naver.maps.Size(45, 45),
+                    origin: new naver.maps.Point(0, 0),
+                },
                 map: map
             })
         })
