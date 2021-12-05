@@ -58,6 +58,7 @@ async function createMarker(map) {
                 },
                 map: map
             })
+            $(marker.eventTarget).attr("id", trash.id)
             $(marker.eventTarget).addClass("trash-marker")
         })
     });
