@@ -33,6 +33,7 @@ async function createMarker(map) {
     let commits = await response.json();
 
     commits.forEach((trash) => {
+        //TODO: 버스정류장 같은경우는 도로명으로 검색이 안됨
         convertAnAddressToCoordinates(trash.address)
         .then(addresses => {
             new naver.maps.Marker({
