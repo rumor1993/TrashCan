@@ -28,7 +28,7 @@ public class AdminService {
     }
 
     public void createTrashInfoFromExcel(MultipartFile file) throws Exception {
-        if (!file.isEmpty()) throw new Exception("파일이 존재하지 않습니다.");
+        if (file.isEmpty()) throw new Exception("파일이 존재하지 않습니다.");
 
         List<Trash> dataList = new ArrayList<>();
         String extension = FilenameUtils.getExtension(file.getOriginalFilename());

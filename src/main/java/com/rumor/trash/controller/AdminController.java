@@ -28,7 +28,12 @@ public class AdminController {
 
     @GetMapping("/admin")
     public String admin() {
-        return "admin/excel_upload_form.html";
+        return "admin/excel_upload_form";
+    }
+
+    @GetMapping("/maps")
+    public String maps() {
+        return "admin/maps";
     }
 
     @PostMapping("/upload")

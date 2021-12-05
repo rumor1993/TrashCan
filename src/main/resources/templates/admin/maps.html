@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+    <title>간단한 지도 표시하기</title>
+    <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=rnbocqpd3n&submodules=geocoder"></script>
+</head>
+<body>
+<div id="map" style="width:100%;height:400px;"></div>
+
+<script>
+
+    await getLocation()
+
+    var mapOptions = {
+       center: new naver.maps.LatLng(37.524873, 126.9047374),
+        zoom: 15
+    };
+
+    var map = new naver.maps.Map('map', mapOptions);
+
+    var point = getLatLng(`서울특별시 영등포구 국회대로 675`)
+    createMarker(map, {x: '126.9090465', y: '37.5254110'})
+
+
+    // 주소 -> 좌표값을 구한다
+    function getLatLng(address) {
+        naver.maps.Service.geocode({
+            address: address
+        }, function(status, response) {
+            if (status !== naver.maps.Service.Status.OK) {
+                return alert('Something wrong!');
+            }
+
+            var result = response.result, // 검색 결과의 컨테이너
+                items = result.items; // 검색 결과의 배열
+            console.log(items)
+            return items[0].point
+        })
+    }
+
+    // 마커 생성
+    function createMarker(map, location) {
+        var marker = new naver.maps.Marker({
+            position: new naver.maps.LatLng(location),
+            map: map
+        })
+    }
+
+    async function getLocation() {
+        return new Promise(function (resolve, reject) {
+            navigator.geolocation.getCurrentPosition(resolve, reject)
+        });
+    }
+
+</script>
+</body>
+</html>
