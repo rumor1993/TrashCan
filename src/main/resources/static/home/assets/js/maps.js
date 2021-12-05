@@ -49,7 +49,7 @@ async function createMarker(map) {
         //TODO: 버스정류장 같은경우는 도로명으로 검색이 안됨
         convertAnAddressToCoordinates(trash.address)
         .then(addresses => {
-            new naver.maps.Marker({
+            var marker = new naver.maps.Marker({
                 position: new naver.maps.LatLng(addresses.result.items[0].point),
                 icon: {
                     url: "home/assets/images/icons8-trash-50-2.png",
@@ -58,6 +58,7 @@ async function createMarker(map) {
                 },
                 map: map
             })
+            $(marker.eventTarget).addClass("trash-marker")
         })
     });
 }
