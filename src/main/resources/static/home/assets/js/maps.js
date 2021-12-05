@@ -1,6 +1,6 @@
 getLocation()
     .then(point => createMap(point))
-
+    .then(map => createMarker(map))
 
 // 주소 -> 좌표값을 구한다
 function convertAnAddressToCoordinates(address) {
@@ -16,22 +16,31 @@ function convertAnAddressToCoordinates(address) {
     })
 }
 
-function createMap(geolocationPosition) {
+async function createMap(geolocationPosition) {
     var mapOptions = {
         center: new naver.maps.LatLng(geolocationPosition.coords.latitude, geolocationPosition.coords.longitude),
+        size: new naver.maps.Size($("#map").width() ,636),
         zoom: 15
-    };
+    }
+
     var map = new naver.maps.Map('map', mapOptions);
-    console.log(map)
     return map
 }
 
 // 마커 생성
-function createMarker(map, location) {
-    var marker = new naver.maps.Marker({
-        position: new naver.maps.LatLng(location),
-        map: map
-    })
+async function createMarker(map) {
+    let response = await fetch("/trash", {method: "GET"});
+    let commits = await response.json();
+
+    commits.forEach((trash) => {
+        convertAnAddressToCoordinates(trash.address)
+        .then(addresses => {
+            new naver.maps.Marker({
+                position: new naver.maps.LatLng(addresses.result.items[0].point),
+                map: map
+            })
+        })
+    });
 }
 
 function getLocation() {

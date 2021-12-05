@@ -22,11 +22,6 @@ public class AdminService {
 
     @Value("${file.dir}") private String fileDir;
 
-    public List<Trash> getTrashCan() {
-        List<Trash> trashCans = adminRepository.findAll();
-        return trashCans;
-    }
-
     public void createTrashInfoFromExcel(MultipartFile file) throws Exception {
         if (file.isEmpty()) throw new Exception("파일이 존재하지 않습니다.");
 
