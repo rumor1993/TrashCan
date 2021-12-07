@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -19,9 +20,9 @@ public class TrashController {
     private final TrashService trashService;
 
     @GetMapping("/trash")
-    public List<Trash> trashAll() {
-        List<Trash> trashList = trashRepository.findAll();
-        return trashList;
+    public List<Trash> trashFromLocation(@RequestParam("region") String region) {
+        if ("".equals(region)) return trashRepository.findAll();
+        return trashRepository.findByRegionContaining(region);
     }
 
     @GetMapping("/trash/{id}")

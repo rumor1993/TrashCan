@@ -38,18 +38,24 @@ async function createMap(geolocationPosition) {
 
     var marker = new naver.maps.Marker(markerOptions);
     getSidogun(geolocationPosition)
+
+    naver.maps.Event.addListener(map, 'dragend', function(e) {
+        console.log(e.point)
+        // getSidogun(geolocationPosition)
+    });
     return map
 }
 
 // 마커 생성
 async function createMarker(map) {
-    let response = await fetch("/trash", {method: "GET"});
+    let response = await fetch(`/trash?region=영등포구`, {method: "GET"});
     let commits = await response.json();
 
     commits.forEach((trash) => {
         //TODO: 버스정류장 같은경우는 도로명으로 검색이 안됨
         convertAnAddressToCoordinates(trash.address)
         .then(addresses => {
+            console.log(addresses)
             var marker = new naver.maps.Marker({
                 position: new naver.maps.LatLng(addresses.result?.items[0]?.point),
                 icon: {
@@ -96,6 +102,15 @@ function getSidogun(geolocationPosition) {
             items = result.items; // 검색 결과의 배열
 
         $("#searchTarget").text(items[0].addrdetail.sigugun)
-        // do Something
+        return items[0]?.addrdetail.sigugun
     });
 }
+
+
+
+
+
+
+
+
+
