@@ -37,6 +37,7 @@ async function createMap(geolocationPosition) {
     };
 
     var marker = new naver.maps.Marker(markerOptions);
+    getSidogun(geolocationPosition)
     return map
 }
 
@@ -50,7 +51,7 @@ async function createMarker(map) {
         convertAnAddressToCoordinates(trash.address)
         .then(addresses => {
             var marker = new naver.maps.Marker({
-                position: new naver.maps.LatLng(addresses.result.items[0].point),
+                position: new naver.maps.LatLng(addresses.result?.items[0]?.point),
                 icon: {
                     url: "home/assets/images/icons8-trash-50-2.png",
                     size: new naver.maps.Size(45, 45),
@@ -81,4 +82,20 @@ async function getTrashInformation(id) {
     $("#address").val(commits.address)
     $("#location").val(commits.location)
     $("#point").val(commits.point)
+}
+
+function getSidogun(geolocationPosition) {
+    naver.maps.Service.reverseGeocode({
+        location: new naver.maps.LatLng(geolocationPosition.coords.latitude, geolocationPosition.coords.longitude),
+    }, function(status, response) {
+        if (status !== naver.maps.Service.Status.OK) {
+            return alert('Something wrong!');
+        }
+
+        var result = response.result, // 검색 결과의 컨테이너
+            items = result.items; // 검색 결과의 배열
+
+        $("#searchTarget").text(items[0].addrdetail.sigugun)
+        // do Something
+    });
 }

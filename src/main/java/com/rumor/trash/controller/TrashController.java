@@ -15,7 +15,6 @@ import java.util.Optional;
 @RestController
 @RequiredArgsConstructor
 public class TrashController {
-
     private final TrashRepository trashRepository;
     private final TrashService trashService;
 
@@ -30,6 +29,4 @@ public class TrashController {
         Trash trash = trashRepository.findById(id).orElse(null);
         return trash;
     }
-
-
 }
