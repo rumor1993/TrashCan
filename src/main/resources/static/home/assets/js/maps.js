@@ -60,12 +60,25 @@ async function createMarker(map) {
             })
             $(marker.eventTarget).attr("id", trash.id)
             $(marker.eventTarget).addClass("trash-marker")
+            $(marker.eventTarget).click(function () {
+                const id = $(this).attr('id')
+                data = getTrashInformation(id)
+            })
         })
     });
 }
 
 function getLocation() {
     return new Promise(function (resolve, reject) {
-        navigator.geolocation.getCurrentPosition(resolve, reject)
+        return navigator.geolocation.getCurrentPosition(resolve, reject)
     });
+}
+
+async function getTrashInformation(id) {
+    let response = await fetch(`/trash/${id}`, {method: "GET"});
+    let commits = await response.json();
+
+    $("#address").val(commits.address)
+    $("#location").val(commits.location)
+    $("#point").val(commits.point)
 }
