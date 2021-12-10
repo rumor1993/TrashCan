@@ -2,33 +2,34 @@ window.addEventListener('DOMContentLoaded', async function () {
 
     const mapEl = document.getElementById("map")
 
-    const map = drawMap();
+    const map = createMap();
     const location = await getLocation();
     const point = {x:location.coords.longitude, y:location.coords.latitude}
 
-    drawMarkerFromMap(point, false)
+    createMarker(point, false)
     map.setCenter(point);
 
     const region = await getRegion(point).then(region => {return region})
-    const response = await getTrashOfCurrentMap(region)
+    document.getElementById("searchTarget").textContent = "'" + region + "' ";
 
-    response.forEach((trash) => {
-        convertAnAddressToCoordinates(trash.address)
-            .then(trashCan => {
-                let trashCanPoint = trashCan?.result?.items[0]?.point
-                if (trashCanPoint) drawMarkerFromMap(trashCanPoint, true)
-            });
-    });
+    const response = await getTrashOfCurrentMap(region)
+    drawMarkerFromMap(response);
 
     naver.maps.Event.addListener(map, 'dragend', async function(e) {
         let afterPoint = {x:e.coord.x, y:e.coord.y}
         let afterRegion = await getRegion(afterPoint).then(region => {return region})
         if (region === afterRegion) return;
+        document.getElementById("searchTarget").textContent = "'" + afterRegion + "' ";
         let response = await getTrashOfCurrentMap(afterRegion)
+        drawMarkerFromMap(response);
     });
 
+    naver.maps.Event.addListener(map, 'zoom_changed', function (e) {
+        console.log(e)
+    })
+
     // 지도를 그린다
-    function drawMap(){
+    function createMap(){
         const mapOptions = {
             size: new naver.maps.Size(mapEl.clientWidth ,636),
             zoom: 15
@@ -76,16 +77,29 @@ window.addEventListener('DOMContentLoaded', async function () {
     }
 
     // 마커를 그린다
-    function drawMarkerFromMap(point, isTrash) {
+    function createMarker(point, trashCan) {
         let marker = new naver.maps.Marker({
             position: new naver.maps.LatLng(point),
             icon: {
-                url: isTrash ? "home/assets/images/icons8-trash-50-2.png" : "home/assets/images/place-marker.png",
+                url: trashCan ? "home/assets/images/icons8-trash-50-2.png" : "home/assets/images/place-marker.png",
                 size: new naver.maps.Size(45, 45),
                 origin: new naver.maps.Point(0, 0),
             },
             map: map
         })
+
+        if (trashCan && marker.eventTarget) {
+            const trashMarker = marker.eventTarget
+            trashMarker.setAttribute("id", trashCan.id)
+            trashMarker.classList.add("trash-marker")
+            trashMarker.addEventListener("click", function () {
+                getTrashInformation(trashCan.id).then(trashInfo => {
+                    document.getElementById("address").value = trashInfo.address
+                    document.getElementById("location").value = trashInfo.location
+                    document.getElementById("point").value = trashInfo.point
+                })
+            })
+        }
     }
 
     function convertAnAddressToCoordinates(address) {
@@ -99,6 +113,22 @@ window.addEventListener('DOMContentLoaded', async function () {
                 resolve(response)
             })
         })
+    }
+
+    function drawMarkerFromMap(response) {
+        response.forEach((trash) => {
+            convertAnAddressToCoordinates(trash.address)
+                .then(trashCan => {
+                    let trashCanPoint = trashCan?.result?.items[0]?.point
+                    if (trashCanPoint) createMarker(trashCanPoint, trash)
+                });
+        });
+    }
+
+    async function getTrashInformation(id) {
+        let response = await fetch(`/trash/${id}`, {method: "GET"});
+        let commits = await response.json();
+        return commits;
     }
 });
 

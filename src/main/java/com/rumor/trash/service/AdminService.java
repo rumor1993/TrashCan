@@ -9,11 +9,13 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -39,22 +41,28 @@ public class AdminService {
             workbook = new HSSFWorkbook(file.getInputStream());
         }
 
+        
         Sheet sheet = workbook.getSheetAt(0);
-        for (int i = 1; i < sheet.getPhysicalNumberOfRows(); i++) { // 4
+        System.out.println("sheet.getPhysicalNumberOfRows() = " + sheet.getPhysicalNumberOfRows());
+        for (int i = 3; i < sheet.getPhysicalNumberOfRows()-3; i++) { // 4
 
             Row row = sheet.getRow(i);
             Trash data = Trash.builder()
-                    .region(row.getCell(1).getStringCellValue())
-                    .controlNumber(row.getCell(2).getStringCellValue())
-                    .address(row.getCell(3).getStringCellValue())
-                    .location(row.getCell(4).getStringCellValue())
-                    .point(row.getCell(5).getStringCellValue())
-                    .type(row.getCell(6).getStringCellValue())
-                    .form(row.getCell(7).getStringCellValue())
-                    .installDate(row.getCell(8).getCellType() == CellType.NUMERIC
-                            ? String.valueOf(row.getCell(8).getNumericCellValue())
-                            : row.getCell(8).getStringCellValue())
+                    .region(Optional.ofNullable(row.getCell(1).getStringCellValue()).orElse(""))
+                    .controlNumber("")
+                    .address(row.getCell(3).getCellType() == CellType.NUMERIC
+                            ? String.valueOf(row.getCell(3).getNumericCellValue())
+                            : row.getCell(3).getStringCellValue())
+                    .location(row.getCell(2).getStringCellValue())
+                    .point("")
+                    .type("")
+                    .form("")
+                    .installDate("")
                     .build();
+
+            System.out.println("data = " + data.getRegion());
+            System.out.println("data = " + data.getAddress());
+            System.out.println("data = " + data.getLocation());
 
             dataList.add(data);
         }
