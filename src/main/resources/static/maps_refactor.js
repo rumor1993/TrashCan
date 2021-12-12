@@ -1,5 +1,6 @@
 window.addEventListener('DOMContentLoaded', async function () {
 
+    // NOTE: 카카오맵이나 구글맵으로 변경해야할듯
     const mapEl = document.getElementById("map")
 
     const map = createMap();
