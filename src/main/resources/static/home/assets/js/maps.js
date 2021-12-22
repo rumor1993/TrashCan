@@ -106,11 +106,7 @@ function getSidogun(geolocationPosition) {
     });
 }
 
-
-
-
-
-
+// 데이터 넣기
 
 
 
